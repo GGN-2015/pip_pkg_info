@@ -1,0 +1,18 @@
+[project]
+name = "pip-pkg-info"
+version = "0.0.1"
+description = "use this pkg to show all the packages installed by pip in JSON form."
+authors = [
+    {name = "GGN_2015",email = "neko@jlulug.org"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "pip"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
