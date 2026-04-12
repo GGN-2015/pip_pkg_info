@@ -1,6 +1,6 @@
 [project]
 name = "pip-pkg-info"
-version = "0.0.3"
+version = "0.0.4"
 description = "use this pkg to show all the packages installed by pip in JSON form."
 authors = [
     {name = "GGN_2015",email = "neko@jlulug.org"}
@@ -10,7 +10,8 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "pip",
-    "tqdm"
+    "tqdm",
+    "colorama"
 ]
 
 
