@@ -25,6 +25,7 @@ def remove_all(self_keep:bool=True):
     # 关键：跳过卸载 tqdm 自身，避免进度条库被删导致异常
     if TQDM_AVAILABLE:
         white_list.append("tqdm")
+        white_list.append("colorama")
 
     # 筛选出所有需要卸载的包列表
     uninstall_pkgs = []
