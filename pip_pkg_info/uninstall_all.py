@@ -1,6 +1,6 @@
 import sys
 
-# 安全导入 tqdm，不存在则不使用进度条（不报错）
+# Safely import tqdm; use progress bar only if available (no error)
 try:
     from tqdm import tqdm
     TQDM_AVAILABLE = True
@@ -15,19 +15,27 @@ except:
     from pkg_info import pip_pkg_info
     from uninstall import uninstall_pkg
 
-def remove_all(self_keep:bool=True):
+def remove_all(self_keep: bool = True, local_keep: bool = True):
     pkg_info = pip_pkg_info()
-    white_list = ["pip"]  # 保持不能删除的基础包
+    white_list = ["pip"]  # Essential packages that must NOT be removed
 
+    # Keep all locally installed packages
+    if local_keep:
+        for pkg_name in pkg_info:
+            pkg_item = pkg_info[pkg_name]
+            if pkg_item["local"] and (pkg_name not in white_list):
+                white_list.append(pkg_name)
+
+    # Ensure pip_pkg_info itself is not uninstalled
     if self_keep:
         white_list.append("pip-pkg-info")
     
-    # 关键：跳过卸载 tqdm 自身，避免进度条库被删导致异常
+    # Skip uninstalling tqdm itself to avoid runtime errors
     if TQDM_AVAILABLE:
         white_list.append("tqdm")
         white_list.append("colorama")
 
-    # 筛选出所有需要卸载的包列表
+    # Collect all packages to uninstall
     uninstall_pkgs = []
     for term, details in sorted(pkg_info.items()):
         if term not in white_list:
@@ -36,7 +44,7 @@ def remove_all(self_keep:bool=True):
     total_cnt = len(uninstall_pkgs)
     fail_cnt = 0
 
-    # 使用 tqdm 进度条遍历卸载（有则用，无则普通循环）
+    # Use tqdm progress bar if available
     if TQDM_AVAILABLE:
         assert tqdm is not None
         pkg_iter = tqdm(
@@ -48,17 +56,17 @@ def remove_all(self_keep:bool=True):
     else:
         pkg_iter = uninstall_pkgs
 
-    # 执行卸载
+    # Perform uninstallation
     for term in pkg_iter:
         try:
             uninstall_pkg(term)
         except Exception as e:
-            # 进度条模式下不输出杂乱信息，保持进度条整洁
+            # Avoid messy output when progress bar is active
             if not TQDM_AVAILABLE:
                 sys.stderr.write(f"Unexpected exception happened when uninstalling {term}.\n")
             fail_cnt += 1
 
-    # 最终结果输出
+    # Print final result
     if fail_cnt != 0:
         sys.stderr.write(f"\nUninstalling total {total_cnt} packages, {fail_cnt} failed.\n")
     else:
