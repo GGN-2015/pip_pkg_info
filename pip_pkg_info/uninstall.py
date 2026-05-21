@@ -30,17 +30,16 @@ def uninstall_pkg(package_name: str, skip_confirmation: bool = True) -> Tuple[bo
         result = subprocess.run(
             cmd,
             capture_output=True,
-            text=True,
             check=True,  # Raise CalledProcessError if exit code != 0
-            encoding='utf-8'
         )
+        assert isinstance(result.stderr, bytes)
 
-        if (result.returncode != 0) or (result.stderr.strip() != ""):
+        if (result.returncode != 0) or (result.stderr.strip() != b""):
             # Handle pip command errors (e.g., package not found, permission denied)
             error_msg = f"Failed to uninstall {package_name}: "
-            if "not installed" in result.stderr.lower() or "no such package" in result.stderr.lower():
+            if b"not installed" in result.stderr.lower() or b"no such package" in result.stderr.lower():
                 error_msg += "Package is not installed"
-            elif "permission denied" in result.stderr.lower() or "access denied" in result.stderr.lower():
+            elif b"permission denied" in result.stderr.lower() or b"access denied" in result.stderr.lower():
                 error_msg += "Permission denied (try running with admin/root privileges)"
             else:
                 error_msg += f"Pip error: {result.stderr.strip()}"

@@ -27,14 +27,16 @@ def pip_pkg_info() -> dict:
         result = subprocess.run(
             command,
             capture_output=True,
-            text=True,
-            check=True,
-            encoding='utf-8'
+            check=True
         )
         
         # Parse each line of the command output
         for line in result.stdout.splitlines():
-            clean_line = line.strip()
+            
+            try:
+                clean_line = line.strip().decode("utf-8")
+            except:
+                clean_line = line.strip().decode("gb2312")
             
             # Skip empty lines
             if not clean_line:

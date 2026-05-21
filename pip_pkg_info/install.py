@@ -16,9 +16,7 @@ def _check_package_installed(package_name: str) -> bool:
         # Use pip show to check package existence (silent output)
         result = subprocess.run(
             [sys.executable, "-m", "pip", "show", package_name],
-            capture_output=True,
-            text=True,
-            encoding='utf-8'
+            capture_output=True
         )
         # pip show returns 0 exit code only if package exists
         return result.returncode == 0
@@ -39,9 +37,7 @@ def _uninstall_package(package_name: str) -> Tuple[bool, str]:
         subprocess.run(
             [sys.executable, "-m", "pip", "uninstall", "-y", package_name],
             capture_output=True,
-            text=True,
-            check=True,
-            encoding='utf-8'
+            check=True
         )
         return True, f"Uninstalled existing package: {package_name}"
     except subprocess.CalledProcessError as e:
@@ -99,9 +95,7 @@ def install_pkg(package_name: str, version: Optional[str] = None) -> Tuple[bool,
         result = subprocess.run(
             [sys.executable, "-m", "pip", "install", package_spec],
             capture_output=True,
-            text=True,
             check=True,
-            encoding='utf-8'
         )
         install_log.append(f"✅ Successfully installed {package_spec}")
         return True, "\n".join(install_log)

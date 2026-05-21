@@ -17,14 +17,15 @@ def get_pip_version() -> Tuple[bool, Optional[str], Optional[str]]:
         result = subprocess.run(
             [sys.executable, "-m", "pip", "--version"],
             capture_output=True,
-            text=True,
-            check=True,
-            encoding='utf-8'
+            check=True
         )
         
         # Parse raw output to extract only the version number
         # Raw output example: "pip 24.0 from /path/to/pip (python 3.11)"
-        raw_output = result.stdout.strip()
+        try:
+            raw_output = result.stdout.strip().decode("utf-8")
+        except:
+            raw_output = result.stdout.strip().decode("gb2312")
         pip_version = None
         
         if raw_output.startswith("pip "):

@@ -1,6 +1,6 @@
 [project]
 name = "pip-pkg-info"
-version = "0.0.6"
+version = "0.1.0"
 description = "use this pkg to show all the packages installed by pip in JSON form."
 authors = [
     {name = "GGN_2015",email = "neko@jlulug.org"}
